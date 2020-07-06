@@ -1,3 +1,9 @@
+/*
+ * @Author: YangQi
+ * @Date: 2020-07-01 11:54:45
+ * @LastEditors: YangQi
+ * @LastEditTime: 2020-07-06 10:07:08
+ */ 
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
@@ -8,7 +14,16 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
 var app = express();
-
+app.all("*", function(req, res, next) {
+  if (!req.get("Origin")) return next();
+  // use "*" here to accept any origin
+  res.set("Access-Control-Allow-Origin","*");
+  res.set("Access-Control-Allow-Methods", "GET");
+  res.set("Access-Control-Allow-Headers", "X-Requested-With, Content-Type");
+  // res.set('Access-Control-Allow-Max-Age', 3600);
+  if ("OPTIONS" === req.method) return res.sendStatus(200);
+  next();
+});
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
